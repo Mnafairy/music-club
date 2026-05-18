@@ -138,18 +138,21 @@ const modern: Club[] = [
   },
 ];
 
-function s3BaseUrl() {
+function s3BaseUrl(): string | null {
   const region = process.env.AWS_REGION;
   const bucket = process.env.AWS_S3_BUCKET;
   const path = (process.env.AWS_S3_BUCKET_PATH ?? "").replace(/^\/+|\/+$/g, "");
   if (!region || !bucket) {
-    throw new Error("AWS_REGION and AWS_S3_BUCKET must be set");
+    console.warn(
+      "AWS_REGION and AWS_S3_BUCKET not set — video assets disabled",
+    );
+    return null;
   }
   const prefix = `https://${bucket}.s3.${region}.amazonaws.com`;
   return path ? `${prefix}/${path}` : prefix;
 }
 
-function ClubCard({ club, base }: { club: Club; base: string }) {
+function ClubCard({ club, base }: { club: Club; base: string | null }) {
   return (
     <article className="club">
       <span className="club-num">{club.num}</span>
@@ -163,13 +166,15 @@ function ClubCard({ club, base }: { club: Club; base: string }) {
         <span className="label">АНГИ</span>
         <span className="range">{club.range}</span>
       </div>
-      <VideoLite
-        videoUrl={`${base}/${club.slug}.mp4`}
-        posterUrl={`${base}/${club.slug}.jpg`}
-        title={club.videoTitle}
-        index={club.videoIndex}
-        duration={club.videoDuration}
-      />
+      {base && (
+        <VideoLite
+          videoUrl={`${base}/${club.slug}.mp4`}
+          posterUrl={`${base}/${club.slug}.jpg`}
+          title={club.videoTitle}
+          index={club.videoIndex}
+          duration={club.videoDuration}
+        />
+      )}
       <p className="club-desc">{club.desc}</p>
       <div className="club-footer">
         <span className="id-code">{club.idCode}</span>
