@@ -191,7 +191,7 @@ export default function Home() {
           <span>2025 / 2026</span>
         </div>
         <h1 className="mega-title">
-          ДУУ
+          Хөгжим
           <br />
           <span className="slash">{"//"}</span>
           <span className="stroked">8</span>
